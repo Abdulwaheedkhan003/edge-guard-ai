@@ -70,3 +70,4 @@ SHARE WITH OTHERS (ngrok)
     ngrok config add-authtoken YOUR_TOKEN
 
 ========================================
+pip install requirement.txt
