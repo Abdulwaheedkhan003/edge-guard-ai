@@ -1,0 +1,10 @@
+.venv/
+.vscode/
+yolo11n.pt
+yolo11s-helmet.pt
+main.py
+cameratest.py
+check_ids.py
+test.py
+write_appjs.py
+edgeguard.db

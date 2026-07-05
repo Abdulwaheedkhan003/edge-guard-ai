@@ -1,0 +1,72 @@
+========================================
+  EdgeGuard AI — How To Run
+========================================
+
+You need TWO terminals open at the same time.
+
+----------------------------------------
+TERMINAL 1 — Flask Backend (API + Video)
+----------------------------------------
+
+  python backend.py
+
+  Starts the Flask server on http://127.0.0.1:5000
+  Handles all API routes: /latest, /update, /history,
+  /analytics, /reports_list, /video_feed, etc.
+
+----------------------------------------
+TERMINAL 2 — YOLO Detection Engine
+----------------------------------------
+
+  .\.venv\Scripts\python.exe main.py
+
+  (If .venv doesn't exist, run:  python -m venv .venv
+   then install deps:  .\.venv\Scripts\pip install -r requirements.txt)
+
+  Captures webcam frames, runs YOLO11 object detection,
+  and POSTs results to the backend every frame.
+
+----------------------------------------
+OPEN THE DASHBOARD
+----------------------------------------
+
+  Browser → http://127.0.0.1:5000
+
+----------------------------------------
+ORDER MATTERS
+----------------------------------------
+
+  1. Start backend.py first
+  2. Then start main.py
+  3. Then open the browser
+
+  If you restart main.py, backend.py can stay running.
+  If you restart backend.py, restart main.py too.
+
+========================================
+
+----------------------------------------
+SHARE WITH OTHERS (ngrok)
+----------------------------------------
+
+  Lets anyone access your dashboard from anywhere.
+  Your laptop must stay ON with backend.py + main.py running.
+
+  TERMINAL 3 — Start the tunnel:
+
+    ngrok http 5000
+
+  Your public URL appears on the Forwarding line:
+
+    Forwarding  https://xxxx.ngrok-free.app -> http://localhost:5000
+
+  Share that URL. It works until you stop ngrok.
+  URL changes every time you restart ngrok (free tier).
+
+  See live URL + visitor requests at:
+    http://127.0.0.1:4040  (or 4041 if 4040 is taken)
+
+  NOTE: ngrok authtoken only needs to be set once:
+    ngrok config add-authtoken YOUR_TOKEN
+
+========================================

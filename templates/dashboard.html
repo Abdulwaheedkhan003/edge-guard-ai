@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="EdgeGuard AI - Enterprise-grade AI-powered construction site safety monitoring platform with real-time YOLO object detection.">
+    <title>EdgeGuard AI — Construction Safety Command Center</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+
+<!-- Ambient Background -->
+<div class="ambient-bg">
+    <div class="ambient-orb orb-1"></div>
+    <div class="ambient-orb orb-2"></div>
+    <div class="ambient-orb orb-3"></div>
+    <div class="grid-mesh"></div>
+</div>
+
+<div class="shell">
+
+    <!-- ═══════════════════════════════════════════════════════════
+         SIDEBAR
+    ═══════════════════════════════════════════════════════════ -->
+    <aside class="sidebar" id="app-sidebar">
+        <div class="sidebar-header">
+            <div class="brand-mark">
+                <div class="brand-shield">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span class="shield-ring"></span>
+                </div>
+                <div class="brand-text">
+                    <h1>EdgeGuard<span class="brand-ai">AI</span></h1>
+                    <p>SAFETY COMMAND</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar-section-label">NAVIGATION</div>
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item active" data-tab="dashboard" id="nav-dashboard">
+                <div class="nav-icon"><i class="fa-solid fa-gauge-high"></i></div>
+                <span class="nav-label">Dashboard</span>
+                <div class="nav-indicator"></div>
+            </a>
+            <a href="#" class="nav-item" data-tab="monitoring" id="nav-monitoring">
+                <div class="nav-icon"><i class="fa-solid fa-video"></i></div>
+                <span class="nav-label">Live Monitoring</span>
+                <div class="nav-indicator"></div>
+            </a>
+            <a href="#" class="nav-item" data-tab="history" id="nav-history">
+                <div class="nav-icon"><i class="fa-solid fa-database"></i></div>
+                <span class="nav-label">Incident History</span>
+                <div class="nav-indicator"></div>
+            </a>
+            <a href="#" class="nav-item" data-tab="analytics" id="nav-analytics">
+                <div class="nav-icon"><i class="fa-solid fa-chart-line"></i></div>
+                <span class="nav-label">Analytics</span>
+                <div class="nav-indicator"></div>
+            </a>
+            <a href="#" class="nav-item" data-tab="reports" id="nav-reports">
+                <div class="nav-icon"><i class="fa-solid fa-file-shield"></i></div>
+                <span class="nav-label">AI Incident Reports</span>
+                <div class="nav-indicator"></div>
+            </a>
+        </nav>
+
+        <div class="sidebar-section-label" style="margin-top:auto;">SYSTEM</div>
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item" data-tab="settings" id="nav-settings">
+                <div class="nav-icon"><i class="fa-solid fa-sliders"></i></div>
+                <span class="nav-label">Settings</span>
+                <div class="nav-indicator"></div>
+            </a>
+            <a href="#" class="nav-item" data-tab="about" id="nav-about">
+                <div class="nav-icon"><i class="fa-solid fa-circle-info"></i></div>
+                <span class="nav-label">About EdgeGuard AI</span>
+                <div class="nav-indicator"></div>
+            </a>
+        </nav>
+
+        <div class="sidebar-device-status">
+            <div class="device-pill">
+                <span class="device-dot"></span>
+                <div class="device-info">
+                    <span class="device-label">EDGE PROCESSOR</span>
+                    <span class="device-val">YOLO11 · ACTIVE</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         MAIN CONTENT AREA
+    ═══════════════════════════════════════════════════════════ -->
+    <div class="main-area">
+
+        <!-- TOP NAVBAR -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="sidebar-toggle" id="sidebar-toggle" title="Toggle sidebar">
+                    <i class="fa-solid fa-bars-staggered"></i>
+                </button>
+                <div class="system-status" id="system-status-badge">
+                    <span class="status-beacon online" id="system-beacon"></span>
+                    <span id="system-status-text">YOLO ENGINE · INITIALIZING</span>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <div class="topbar-chip">
+                    <i class="fa-regular fa-clock"></i>
+                    <span id="live-clock" class="chip-mono">--:--:--</span>
+                </div>
+                <div class="topbar-chip">
+                    <i class="fa-regular fa-calendar-days"></i>
+                    <span id="live-date">-- --- ----</span>
+                </div>
+                <div class="topbar-chip connection-chip" id="backend-status-badge">
+                    <span class="conn-beacon pulse-blue" id="conn-beacon"></span>
+                    <span id="backend-status-text">CONNECTING…</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- CONTENT VIEWPORT -->
+        <main class="viewport">
+
+            <!-- ═══════════════════════ TAB: DASHBOARD ═══════════════════════ -->
+            <section id="tab-dashboard" class="tab-panel active">
+                <div class="page-header">
+                    <h2 class="page-title"><i class="fa-solid fa-gauge-high text-blue"></i> Operational Dashboard</h2>
+                    <div class="page-meta" id="last-updated-ts">Last synced: —</div>
+                </div>
+
+                <!-- Row 1 — KPI Cards -->
+                <div class="kpi-row">
+                    <div class="kpi-card" id="kpi-workers">
+                        <div class="kpi-icon blue"><i class="fa-solid fa-person-walking-luggage"></i></div>
+                        <div class="kpi-body">
+                            <span class="kpi-label">WORKERS DETECTED</span>
+                            <span class="kpi-value" id="kpi-workers-val">0</span>
+                            <span class="kpi-sub">Active Zone Personnel</span>
+                        </div>
+                        <div class="kpi-trend" id="kpi-workers-trend">—</div>
+                    </div>
+                    <div class="kpi-card" id="kpi-machines">
+                        <div class="kpi-icon orange"><i class="fa-solid fa-truck-monster"></i></div>
+                        <div class="kpi-body">
+                            <span class="kpi-label">MACHINERY DETECTED</span>
+                            <span class="kpi-value" id="kpi-machines-val">0</span>
+                            <span class="kpi-sub">Heavy Equipment Units</span>
+                        </div>
+                        <div class="kpi-trend" id="kpi-machines-trend">—</div>
+                    </div>
+                    <div class="kpi-card" id="kpi-risk">
+                        <div class="kpi-icon green" id="kpi-risk-icon"><i class="fa-solid fa-shield-check"></i></div>
+                        <div class="kpi-body">
+                            <span class="kpi-label">CURRENT RISK LEVEL</span>
+                            <span class="kpi-value" id="kpi-risk-val">0<small>%</small></span>
+                            <span class="kpi-sub">Proximity Risk Score</span>
+                        </div>
+                        <div class="kpi-trend" id="kpi-fps-badge">0 FPS</div>
+                    </div>
+                    <div class="kpi-card status-kpi" id="kpi-status">
+                        <div class="kpi-icon green" id="kpi-status-icon"><i class="fa-solid fa-shield-check"></i></div>
+                        <div class="kpi-body">
+                            <span class="kpi-label">SYSTEM STATUS</span>
+                            <span class="kpi-value status-value" id="kpi-status-val">SAFE</span>
+                            <span class="kpi-sub" id="kpi-status-sub">No hazards detected</span>
+                        </div>
+                        <div class="status-ring" id="kpi-status-ring"></div>
+                    </div>
+                </div>
+
+                <!-- Row 2 — Live Feed + Telemetry Panel -->
+                <div class="dash-grid">
+                    <!-- Live Feed -->
+                    <div class="panel feed-panel span-8" id="live-feed-panel">
+                        <div class="panel-head">
+                            <div class="panel-title">
+                                <i class="fa-solid fa-satellite-dish text-blue"></i>
+                                Live Edge Vision
+                            </div>
+                            <div class="panel-tools">
+                                <button class="btn btn-primary" id="btn-toggle-webcam" style="padding: 4px 10px; font-size: 11px; margin-right: 10px; display: inline-flex; align-items: center; gap: 5px; background: linear-gradient(135deg, var(--blue), #00bfff); border: none; box-shadow: 0 0 10px rgba(30,144,255,0.4); text-transform: uppercase; font-family: var(--font-mono); font-weight: 600; letter-spacing: 0.5px;">
+                                    <i class="fa-solid fa-camera"></i> <span id="webcam-btn-text">Start Webcam</span>
+                                </button>
+                                <span class="chip-badge" id="hud-fps-badge"><i class="fa-solid fa-bolt"></i><span id="feed-fps">0</span> FPS</span>
+                                <span class="chip-badge chip-live"><span class="rec-dot"></span>LIVE</span>
+                            </div>
+                        </div>
+                        <div class="feed-stage">
+                            <img id="edge-camera-feed" src="/video_feed" alt="Live Edge Vision" width="960" height="540">
+                            <div class="feed-hud">
+                                <div class="hud-corner tl"></div>
+                                <div class="hud-corner tr"></div>
+                                <div class="hud-corner bl"></div>
+                                <div class="hud-corner br"></div>
+                                <div class="hud-telem">
+                                    <div class="telem-row"><span>MODEL</span><span>YOLO11_EDGE</span></div>
+                                    <div class="telem-row"><span>LATENCY</span><span id="hud-latency">-- ms</span></div>
+                                    <div class="telem-row"><span>RESOLUTION</span><span>960×540</span></div>
+                                </div>
+                            </div>
+                            <div class="feed-critical-overlay" id="hud-alert-indicator">
+                                <div class="critical-banner">
+                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                    <div>
+                                        <div class="critical-title">HAZARD DETECTED</div>
+                                        <div class="critical-msg" id="hud-alert-text">PROXIMITY THRESHOLD EXCEEDED</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="feed-footer-bar">
+                            <div class="ffb-stat">
+                                <span class="ffb-label"><i class="fa-solid fa-person-walking text-blue"></i> WORKERS</span>
+                                <span class="ffb-val blue" id="hud-worker-count">0</span>
+                            </div>
+                            <div class="ffb-divider"></div>
+                            <div class="ffb-stat">
+                                <span class="ffb-label"><i class="fa-solid fa-truck text-orange"></i> MACHINERY</span>
+                                <span class="ffb-val orange" id="hud-machine-count">0</span>
+                            </div>
+                            <div class="ffb-divider"></div>
+                            <div class="ffb-stat">
+                                <span class="ffb-label"><i class="fa-solid fa-gauge text-green"></i> DETECTION FPS</span>
+                                <span class="ffb-val green" id="hud-fps">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Telemetry Column -->
+                    <div class="dash-col span-4">
+
+                        <!-- Risk Meter -->
+                        <div class="panel risk-panel">
+                            <div class="panel-head">
+                                <div class="panel-title"><i class="fa-solid fa-triangle-exclamation text-orange"></i> Risk Evaluation</div>
+                                <span class="risk-pct-badge" id="risk-value-percentage">0%</span>
+                            </div>
+                            <div class="panel-body risk-body">
+                                <div class="risk-track-wrap">
+                                    <div class="risk-track">
+                                        <div class="risk-fill" id="risk-meter-bar" style="width:0%"></div>
+                                    </div>
+                                    <div class="risk-zones">
+                                        <span class="rz green">SAFE 0–49</span>
+                                        <span class="rz yellow">WARN 50–79</span>
+                                        <span class="rz red">CRIT 80–100</span>
+                                    </div>
+                                </div>
+
+                                <!-- Safety Score -->
+                                <div class="score-block">
+                                    <div class="score-gauge-wrap">
+                                        <svg viewBox="0 0 120 120" class="score-svg">
+                                            <circle cx="60" cy="60" r="50" class="score-bg-ring"/>
+                                            <circle cx="60" cy="60" r="50" class="score-arc" id="safety-score-arc" stroke-dasharray="314.16" stroke-dashoffset="0"/>
+                                        </svg>
+                                        <div class="score-inner">
+                                            <span id="safety-score-val">100</span>
+                                            <span id="safety-score-label">EXCELLENT</span>
+                                        </div>
+                                    </div>
+                                    <div class="score-info">
+                                        <h4>SAFETY SCORE</h4>
+                                        <p>Dynamic moving average based on live proximity risk events and incident history.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Active Alert Panel -->
+                        <div class="panel alert-panel">
+                            <div class="panel-head">
+                                <div class="panel-title"><i class="fa-solid fa-bell text-orange"></i> Active Alerts</div>
+                                <span class="pulse-dot orange"></span>
+                            </div>
+                            <div class="panel-body">
+                                <div class="alert-card" id="latest-alert-card">
+                                    <div class="alert-ic-wrap" id="alert-box-icon">
+                                        <i class="fa-solid fa-circle-check"></i>
+                                    </div>
+                                    <div class="alert-text">
+                                        <h4 id="alert-summary-title">SYSTEM SECURE</h4>
+                                        <p id="alert-summary-desc">No hazards registered in active workspace area.</p>
+                                    </div>
+                                </div>
+                                <div class="alert-recommendation" id="alert-recommendation-box" style="margin-top: 12px; padding: 12px; border-radius: 6px; background: rgba(255,255,255,0.02); border-left: 4px solid var(--green); font-family: var(--font-mono); font-size: 11px; line-height: 1.5; color: var(--text-secondary); letter-spacing: 0.5px;">
+                                    SYSTEM RECOMMENDED ACTION: Maintain standard safety vigilance.
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══════════════════════ TAB: LIVE MONITORING ═══════════════════════ -->
+            <section id="tab-monitoring" class="tab-panel">
+                <div class="page-header">
+                    <h2 class="page-title"><i class="fa-solid fa-video text-blue"></i> Live Monitoring Station</h2>
+                    <div class="page-meta">Primary camera overlay with AI annotation stream</div>
+                </div>
+                <div class="monitor-grid">
+                    <!-- Primary Stream -->
+                    <div class="panel mon-feed span-8">
+                        <div class="panel-head">
+                            <div class="panel-title"><i class="fa-solid fa-expand text-blue"></i> Primary AI Camera Stream</div>
+                            <div class="panel-tools">
+                                <button class="btn btn-primary" id="btn-toggle-webcam-mon" style="padding: 4px 10px; font-size: 11px; margin-right: 10px; display: inline-flex; align-items: center; gap: 5px; background: linear-gradient(135deg, var(--blue), #00bfff); border: none; box-shadow: 0 0 10px rgba(30,144,255,0.4); text-transform: uppercase; font-family: var(--font-mono); font-weight: 600; letter-spacing: 0.5px;">
+                                    <i class="fa-solid fa-camera"></i> <span id="webcam-btn-text-mon">Start Webcam</span>
+                                </button>
+                                <span class="chip-badge"><i class="fa-solid fa-gauge"></i> Latency: <span id="monitor-latency">0 ms</span></span>
+                                <span class="chip-badge"><i class="fa-solid fa-microchip"></i> YOLOv11s</span>
+                            </div>
+                        </div>
+                        <div class="feed-stage mon-stage">
+                            <img id="monitoring-primary-feed" src="/video_feed" alt="Primary AI Camera Stream" width="960" height="540">
+                        </div>
+                    </div>
+
+                    <!-- Stream Logs -->
+                    <div class="panel mon-logs span-4">
+                        <div class="panel-head">
+                            <div class="panel-title"><i class="fa-solid fa-terminal text-blue"></i> AI Detection Stream</div>
+                        </div>
+                        <div class="panel-body console-panel-body">
+                            <div class="hw-bars">
+                                <div class="hw-row">
+                                    <div class="hw-labels"><span>GPU LOAD</span><span class="mono">78%</span></div>
+                                    <div class="hw-track"><div class="hw-fill blue" style="width:78%"></div></div>
+                                </div>
+                                <div class="hw-row">
+                                    <div class="hw-labels"><span>VRAM USE</span><span class="mono">4.2 GB</span></div>
+                                    <div class="hw-track"><div class="hw-fill blue" style="width:52%"></div></div>
+                                </div>
+                                <div class="hw-row">
+                                    <div class="hw-labels"><span>EDGE TEMP</span><span class="mono text-orange">64°C</span></div>
+                                    <div class="hw-track"><div class="hw-fill orange" style="width:64%"></div></div>
+                                </div>
+                            </div>
+                            <div class="console-hdr"><span>YOLO DETECTION LOG</span></div>
+                            <div class="console-box" id="realtime-console-logs">
+                                <div class="clog system"><span class="clog-ts">[BOOT]</span> EdgeGuard AI Vision engine initialized.</div>
+                                <div class="clog system"><span class="clog-ts">[BOOT]</span> Camera stream on ID 0 · OPEN.</div>
+                                <div class="clog system"><span class="clog-ts">[BOOT]</span> SQLite pipeline connected · Listening.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══════════════════════ TAB: INCIDENT HISTORY ═══════════════════════ -->
+            <section id="tab-history" class="tab-panel">
+                <div class="page-header">
+                    <h2 class="page-title"><i class="fa-solid fa-database text-orange"></i> Incident History Log</h2>
+                    <div class="page-meta">SQLite database records · Newest first</div>
+                </div>
+                <div class="panel history-panel">
+                    <div class="panel-head flex-wrap-head">
+                        <div class="panel-title"><i class="fa-solid fa-table-list"></i> Safety Event Records</div>
+                        <div class="history-controls">
+                            <div class="search-wrap">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" id="history-search-input" placeholder="Search status or timestamp…">
+                            </div>
+                            <button class="btn btn-ghost" id="btn-export-csv"><i class="fa-solid fa-file-csv"></i> Export CSV</button>
+                            <button class="btn btn-primary" id="btn-refresh-history"><i class="fa-solid fa-rotate"></i> Refresh</button>
+                        </div>
+                    </div>
+                    <div class="panel-body no-padding">
+                        <div class="table-scroll">
+                            <table class="data-table" id="incidents-history-table">
+                                <thead>
+                                    <tr>
+                                        <th>#ID</th>
+                                        <th>Timestamp</th>
+                                        <th>Workers</th>
+                                        <th>Machines</th>
+                                        <th>Risk %</th>
+                                        <th>Status</th>
+                                        <th>FPS</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="history-table-body">
+                                    <tr>
+                                        <td colspan="8" class="table-loader">
+                                            <i class="fa-solid fa-spinner fa-spin"></i>
+                                            <span>Loading records from SQLite…</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="panel-foot">
+                        <div class="pg-info">
+                            Showing <strong id="pagination-start-index">0</strong>–<strong id="pagination-end-index">0</strong> of <strong id="pagination-total-records">0</strong> records
+                        </div>
+                        <div class="pg-controls">
+                            <button class="pg-btn" id="page-btn-first" disabled><i class="fa-solid fa-angles-left"></i></button>
+                            <button class="pg-btn" id="page-btn-prev" disabled><i class="fa-solid fa-angle-left"></i></button>
+                            <div id="pagination-page-numbers" class="pg-nums"></div>
+                            <button class="pg-btn" id="page-btn-next" disabled><i class="fa-solid fa-angle-right"></i></button>
+                            <button class="pg-btn" id="page-btn-last" disabled><i class="fa-solid fa-angles-right"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══════════════════════ TAB: ANALYTICS ═══════════════════════ -->
+            <section id="tab-analytics" class="tab-panel">
+                <div class="page-header">
+                    <h2 class="page-title"><i class="fa-solid fa-chart-line text-blue"></i> Analytics & Insights</h2>
+                    <div class="page-meta">Statistical overview from SQLite database</div>
+                </div>
+
+                <!-- Summary Metric Cards -->
+                <div class="analytics-kpi-row">
+                    <div class="a-kpi-card">
+                        <div class="a-kpi-icon blue"><i class="fa-solid fa-wave-square"></i></div>
+                        <div class="a-kpi-body">
+                            <span>AVG RISK</span>
+                            <strong id="metric-avg-risk">0%</strong>
+                        </div>
+                    </div>
+                    <div class="a-kpi-card">
+                        <div class="a-kpi-icon orange"><i class="fa-solid fa-temperature-arrow-up"></i></div>
+                        <div class="a-kpi-body">
+                            <span>PEAK RISK TODAY</span>
+                            <strong id="metric-max-risk">0%</strong>
+                        </div>
+                    </div>
+                    <div class="a-kpi-card">
+                        <div class="a-kpi-icon red"><i class="fa-solid fa-bell-exclamation"></i></div>
+                        <div class="a-kpi-body">
+                            <span>CRITICAL EVENTS</span>
+                            <strong id="metric-critical-count" class="red">0</strong>
+                        </div>
+                    </div>
+                    <div class="a-kpi-card">
+                        <div class="a-kpi-icon yellow"><i class="fa-solid fa-circle-exclamation"></i></div>
+                        <div class="a-kpi-body">
+                            <span>WARNING EVENTS</span>
+                            <strong id="metric-warning-count" class="yellow">0</strong>
+                        </div>
+                    </div>
+                    <div class="a-kpi-card">
+                        <div class="a-kpi-icon green"><i class="fa-solid fa-shield-check"></i></div>
+                        <div class="a-kpi-body">
+                            <span>SAFE EVENTS</span>
+                            <strong id="metric-safe-count" class="green">0</strong>
+                        </div>
+                    </div>
+                    <div class="a-kpi-card">
+                        <div class="a-kpi-icon blue"><i class="fa-solid fa-layer-group"></i></div>
+                        <div class="a-kpi-body">
+                            <span>TOTAL INCIDENTS</span>
+                            <strong id="metric-total-incidents">0</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Grid -->
+                <div class="charts-grid">
+                    <div class="panel chart-panel span-7">
+                        <div class="panel-head">
+                            <div class="panel-title"><i class="fa-solid fa-chart-area text-blue"></i> Risk Level Trend</div>
+                            <span class="panel-badge">Last 30 Readings</span>
+                        </div>
+                        <div class="panel-body chart-body">
+                            <canvas id="chart-risk-trend"></canvas>
+                        </div>
+                    </div>
+                    <div class="panel chart-panel span-5">
+                        <div class="panel-head">
+                            <div class="panel-title"><i class="fa-solid fa-chart-pie text-blue"></i> Status Distribution</div>
+                        </div>
+                        <div class="panel-body chart-body donut-body">
+                            <canvas id="chart-status-distribution"></canvas>
+                        </div>
+                    </div>
+                    <div class="panel chart-panel span-6">
+                        <div class="panel-head">
+                            <div class="panel-title"><i class="fa-solid fa-people-carry-box text-orange"></i> Detection Trends</div>
+                            <span class="panel-badge">Workers & Machinery</span>
+                        </div>
+                        <div class="panel-body chart-body">
+                            <canvas id="chart-objects-trend"></canvas>
+                        </div>
+                    </div>
+                    <div class="panel chart-panel span-6">
+                        <div class="panel-head">
+                            <div class="panel-title"><i class="fa-solid fa-chart-bar text-orange"></i> Hourly Alert Frequency</div>
+                        </div>
+                        <div class="panel-body chart-body">
+                            <canvas id="chart-frequency-distribution"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══════════════════════ TAB: AI INCIDENT REPORTS ═══════════════════════ -->
+            <section id="tab-reports" class="tab-panel">
+                <div class="page-header">
+                    <h2 class="page-title"><i class="fa-solid fa-file-shield text-blue"></i> AI Incident Reports</h2>
+                    <div class="page-meta">Auto-generated professional safety reports from database records</div>
+                </div>
+                <div class="reports-layout">
+                    <!-- Selector -->
+                    <div class="panel rep-selector span-4">
+                        <div class="panel-head">
+                            <div class="panel-title"><i class="fa-solid fa-clipboard-list text-blue"></i> Select Incident</div>
+                        </div>
+                        <div class="panel-body sel-body">
+                            <p class="sel-hint">Select a hazard event from the database to generate a professional AI safety report document.</p>
+                            <div id="report-source-list" class="rep-list">
+                                <div class="empty-state">
+                                    <i class="fa-solid fa-folder-open"></i>
+                                    <p>No incidents loaded. Visit Incident History tab first.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Report Viewer -->
+                    <div class="panel rep-viewer span-8">
+                        <div class="panel-head">
+                            <div class="panel-title"><i class="fa-solid fa-file-invoice text-blue"></i> Incident Report</div>
+                            <div class="rep-actions">
+                                <button class="btn btn-ghost" id="btn-download-report"><i class="fa-solid fa-download"></i> Download</button>
+                                <button class="btn btn-ghost" id="btn-print-report"><i class="fa-solid fa-print"></i> Print</button>
+                                <button class="btn btn-primary" id="btn-export-pdf"><i class="fa-solid fa-file-pdf"></i> Export PDF</button>
+                            </div>
+                        </div>
+                        <div class="panel-body rep-body">
+                            <div class="report-doc" id="printable-report-area">
+                                <div class="rep-watermark">EDGEGUARD CONFIDENTIAL</div>
+
+                                <div class="rep-doc-header">
+                                    <div>
+                                        <h2>EdgeGuard AI — Safety Incident Report</h2>
+                                        <span class="rep-id-tag">REPORT ID: EG-REP-<span id="rep-id">XXXXX</span></span>
+                                    </div>
+                                    <div class="rep-logo-block">
+                                        <i class="fa-solid fa-shield-halved"></i>
+                                        <span>EDGEGUARD</span>
+                                    </div>
+                                </div>
+
+                                <div class="rep-divider"></div>
+
+                                <div class="rep-meta-grid">
+                                    <div class="rep-meta-item">
+                                        <span class="rmi-label">INCIDENT TIMESTAMP</span>
+                                        <span class="rmi-val mono" id="rep-time">—</span>
+                                    </div>
+                                    <div class="rep-meta-item">
+                                        <span class="rmi-label">PEAK RISK LEVEL</span>
+                                        <span class="rmi-val mono danger" id="rep-risk">0%</span>
+                                    </div>
+                                    <div class="rep-meta-item">
+                                        <span class="rmi-label">WORKER DETECTIONS</span>
+                                        <span class="rmi-val mono" id="rep-workers">0</span>
+                                    </div>
+                                    <div class="rep-meta-item">
+                                        <span class="rmi-label">MACHINE DETECTIONS</span>
+                                        <span class="rmi-val mono" id="rep-machines">0</span>
+                                    </div>
+                                </div>
+
+                                <div class="rep-section">
+                                    <h3><i class="fa-solid fa-magnifying-glass-chart"></i> AI Incident Summary</h3>
+                                    <div class="rep-summary-box" id="rep-ai-summary">
+                                        Select an incident from the registry to generate a comprehensive AI safety analysis summary.
+                                    </div>
+                                </div>
+
+                                <div class="rep-two-col">
+                                    <div class="rep-section">
+                                        <h3><i class="fa-solid fa-shield-check"></i> Immediate Actions Taken</h3>
+                                        <ul class="rep-list-items" id="rep-actions-list">
+                                            <li>Select an event to auto-generate immediate actions.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="rep-section">
+                                        <h3><i class="fa-solid fa-clipboard-check"></i> Safety Recommendations</h3>
+                                        <ul class="rep-list-items" id="rep-recommendations-list">
+                                            <li>Long-term preventive measures will appear here.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="rep-sign-row">
+                                    <div class="rep-sign-block">
+                                        <div class="rep-sign-line"></div>
+                                        <span>Safety Officer Signature</span>
+                                    </div>
+                                    <div class="rep-sign-block">
+                                        <div class="rep-sign-line"></div>
+                                        <span>EdgeGuard AI · Telemetry Verification</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══════════════════════ TAB: SETTINGS ═══════════════════════ -->
+            <section id="tab-settings" class="tab-panel">
+                <div class="page-header">
+                    <h2 class="page-title"><i class="fa-solid fa-sliders text-blue"></i> System Configuration</h2>
+                    <div class="page-meta">Edge device control parameters and system automation</div>
+                </div>
+                <div class="settings-grid">
+                    <!-- Connection Settings -->
+                    <div class="panel set-panel span-6">
+                        <div class="panel-head">
+                            <div class="panel-title"><i class="fa-solid fa-plug text-blue"></i> Connection Settings</div>
+                        </div>
+                        <div class="panel-body settings-body">
+                            <div class="set-group">
+                                <h5>FLASK BACKEND ENDPOINT</h5>
+                                <div class="set-row">
+                                    <div class="set-desc">
+                                        <span>Backend REST URL</span>
+                                        <p>Target address of the Flask REST services</p>
+                                    </div>
+                                    <input type="text" id="setting-backend-url" class="set-input" value="http://127.0.0.1:5000">
+                                </div>
+                                <div class="set-row">
+                                    <div class="set-desc">
+                                        <span>Polling Rate: <strong id="setting-polling-val" class="text-blue">1000ms</strong></span>
+                                        <p>How frequently the frontend fetches data from the backend</p>
+                                    </div>
+                                    <input type="range" id="setting-polling-rate" min="500" max="5000" step="250" value="1000" class="set-slider">
+                                </div>
+                            </div>
+                            <div class="set-group">
+                                <h5>HUD DISPLAY OPTIONS</h5>
+                                <div class="set-row toggle-row">
+                                    <div class="set-desc">
+                                        <span>Scanning Grid Overlay</span>
+                                        <p>Renders tactical radar scan lines on camera feed</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="setting-toggle-grid" checked>
+                                        <span class="toggle-track"></span>
+                                    </label>
+                                </div>
+                                <div class="set-row toggle-row">
+                                    <div class="set-desc">
+                                        <span>Proximity Risk Vectors</span>
+                                        <p>Draw hazard lines connecting workers and machinery</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="setting-toggle-vectors" checked>
+                                        <span class="toggle-track"></span>
+                                    </label>
+                                </div>
+                                <div class="set-row toggle-row">
+                                    <div class="set-desc">
+                                        <span>Background Aurora Effects</span>
+                                        <p>Ambient glow animations in dashboard background</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="setting-toggle-auroras" checked>
+                                        <span class="toggle-track"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Audio + System Actions -->
+                    <div class="panel set-panel span-6">
+                        <div class="panel-head">
+                            <div class="panel-title"><i class="fa-solid fa-volume-high text-blue"></i> Audio & System Actions</div>
+                        </div>
+                        <div class="panel-body settings-body">
+                            <div class="set-group">
+                                <h5>ALARM SYSTEM</h5>
+                                <div class="set-row toggle-row">
+                                    <div class="set-desc">
+                                        <span>Warning Siren Audio</span>
+                                        <p>Emits synthesized alarm tones during critical events</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="setting-toggle-audio" checked>
+                                        <span class="toggle-track"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="set-group">
+                                <h5>SIMULATOR / FALLBACK MODE</h5>
+                                <div class="set-row">
+                                    <div class="set-desc">
+                                        <span>Emulated Worker Count</span>
+                                        <p>Worker baseline when Flask backend is offline</p>
+                                    </div>
+                                    <input type="number" id="setting-emu-workers" class="set-num" min="0" max="20" value="3">
+                                </div>
+                                <div class="set-row">
+                                    <div class="set-desc">
+                                        <span>Emulated Machine Count</span>
+                                        <p>Machinery baseline when Flask backend is offline</p>
+                                    </div>
+                                    <input type="number" id="setting-emu-machines" class="set-num" min="0" max="20" value="2">
+                                </div>
+                            </div>
+                            <div class="set-group">
+                                <h5>DATABASE MANAGEMENT</h5>
+                                <div class="set-action-row">
+                                    <button class="btn btn-danger" id="btn-clear-db">
+                                        <i class="fa-solid fa-trash-can"></i> Purge Database
+                                    </button>
+                                    <button class="btn btn-ghost" id="btn-restore-defaults">
+                                        <i class="fa-solid fa-rotate-left"></i> Restore Defaults
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══════════════════════ TAB: ABOUT ═══════════════════════ -->
+            <section id="tab-about" class="tab-panel">
+                <div class="page-header">
+                    <h2 class="page-title"><i class="fa-solid fa-circle-info text-blue"></i> About EdgeGuard AI</h2>
+                    <div class="page-meta">System information & architecture</div>
+                </div>
+                <div class="about-layout">
+                    <div class="panel about-hero-panel span-12">
+                        <div class="about-hero">
+                            <div class="about-logo-ring">
+                                <i class="fa-solid fa-shield-halved"></i>
+                            </div>
+                            <div class="about-hero-text">
+                                <h2>EdgeGuard AI <span class="version-tag">v1.2.0</span></h2>
+                                <p>Next-Generation Deep Learning Construction Safety & Proximity Protection Engine.<br>
+                                Deployed on edge computing hardware for real-time, zero-latency hazard detection.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel about-panel span-6">
+                        <div class="panel-head">
+                            <div class="panel-title"><i class="fa-solid fa-brain text-blue"></i> AI Model Core</div>
+                        </div>
+                        <div class="panel-body about-body">
+                            <p>The system leverages <strong>YOLO11</strong> architecture for real-time inference on edge hardware, processing image matrices to simultaneously track workers and machinery in industrial environments.</p>
+                            <div class="about-specs">
+                                <div class="spec-row"><span>INFERENCE TARGET</span><span>30+ FPS on Jetson Orin</span></div>
+                                <div class="spec-row"><span>WORKER MODEL</span><span>YOLOv11s-helmet (fine-tuned)</span></div>
+                                <div class="spec-row"><span>MACHINE MODEL</span><span>YOLOv11n standard COCO</span></div>
+                                <div class="spec-row"><span>FRAMEWORK</span><span>OpenCV · Python</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel about-panel span-6">
+                        <div class="panel-head">
+                            <div class="panel-title"><i class="fa-solid fa-microchip text-orange"></i> Edge Architecture</div>
+                        </div>
+                        <div class="panel-body about-body">
+                            <p>EdgeGuard runs fully local REST endpoints and OpenCV pipelines. Even during network outage, detection logic, risk loops, and sirens continue locally with <strong>zero cloud dependency</strong>.</p>
+                            <div class="about-specs">
+                                <div class="spec-row"><span>LOCAL STORAGE</span><span>SQLite3 journal database</span></div>
+                                <div class="spec-row"><span>REST API</span><span>Flask · HTTP polling</span></div>
+                                <div class="spec-row"><span>ALARM OUTPUT</span><span>Web Audio API synthesis</span></div>
+                                <div class="spec-row"><span>DASHBOARD</span><span>Vanilla HTML/CSS/JS</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel about-panel span-12">
+                        <div class="panel-head">
+                            <div class="panel-title"><i class="fa-solid fa-sitemap text-blue"></i> System Pipeline</div>
+                        </div>
+                        <div class="panel-body">
+                            <div class="pipeline">
+                                <div class="pipe-node blue">
+                                    <i class="fa-solid fa-camera"></i>
+                                    <span>Camera (OpenCV)</span>
+                                </div>
+                                <div class="pipe-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+                                <div class="pipe-node orange">
+                                    <i class="fa-solid fa-brain"></i>
+                                    <span>YOLO11 Inference</span>
+                                </div>
+                                <div class="pipe-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+                                <div class="pipe-node red">
+                                    <i class="fa-solid fa-ruler-combined"></i>
+                                    <span>Proximity Calc</span>
+                                </div>
+                                <div class="pipe-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+                                <div class="pipe-node yellow">
+                                    <i class="fa-solid fa-bell"></i>
+                                    <span>Risk & Alerts</span>
+                                </div>
+                                <div class="pipe-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+                                <div class="pipe-node blue">
+                                    <i class="fa-solid fa-server"></i>
+                                    <span>Flask REST API</span>
+                                </div>
+                                <div class="pipe-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+                                <div class="pipe-node green">
+                                    <i class="fa-solid fa-display"></i>
+                                    <span>Dashboard UI</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+</div>
+
+<script src="/static/js/app.js"></script>
+</body>
+</html>
