@@ -17,10 +17,7 @@ Built for industrial environments, the system combines AI vision, real-time anal
 ->Heavy machinery, limited visibility, human error, fatigue, and delayed communication create situations where a single second can determine whether a worker walks away safely or suffers a life-changing injury.
 ->Traditional CCTV systems merely record incidents.
 ->EdgeGuard AI actively analyzes them.
-
-============================================================================================================================================================================================================================
 💡 Our Solution
-
 EdgeGuard AI transforms ordinary surveillance cameras into intelligent safety supervisors.
 The system continuously detects workers and heavy machinery, evaluates their spatial relationship in real time, calculates dynamic risk scores, and immediately alerts operators whenever dangerous proximity is detected.
 Unlike conventional monitoring systems, EdgeGuard AI performs inference directly on edge devices, ensuring minimal latency, greater privacy, and reliable operation even in environments with limited internet connectivity.
